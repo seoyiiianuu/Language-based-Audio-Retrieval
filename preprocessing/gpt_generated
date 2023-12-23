@@ -1,0 +1,58 @@
+import csv
+import openai
+
+# Set OpenAI API key
+openai.api_key = 'YOUR_API_KEY'
+
+# Define function to generate titles
+def generate_titles(text_title, num_titles=5):
+    prompt = f"I would like to generate {num_titles} new titles based on the following text title:
+
+Text Title: {text_title}
+
+Requirements:
+- Include the main information points in an objective and detailed manner.
+- Use a subject-verb-object sentence structure.
+- Avoid specific names of people or places.
+- Keep the word count between 15-30 words.
+- Avoid using words like 'hear', 'listen', or 'record'.
+
+Generated Titles:"
+
+    response = openai.Completion.create(
+        engine='text-davinci-003',
+        prompt=prompt,
+        max_tokens=30,
+        temperature=0.7,
+        n=num_titles,
+        stop=None,
+        temperature=0.7
+    )
+
+    titles = [title['text'].strip() for title in response.choices]
+    return titles
+
+# Read CSV file
+input_csv_file = 'input_file.csv'
+output_csv_file = 'output_file.csv'
+
+with open(input_csv_file, 'r') as file:
+    reader = csv.DictReader(file)
+    rows = list(reader)
+
+# Generate new titles and update CSV file
+for row in rows:
+    text_title = row['Text Title']
+    generated_titles = generate_titles(text_title, num_titles=5)
+    row['Generated Titles'] = '
+'.join(generated_titles)
+
+# Write updated CSV file
+fieldnames = list(rows[0].keys()) + ['Generated Titles']
+
+with open(output_csv_file, 'w', newline='') as file:
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(rows)
+
+print("Generated titles have been written to the CSV file.")
