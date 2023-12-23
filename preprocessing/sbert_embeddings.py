@@ -5,12 +5,12 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 
 global_params = {
-    "dataset_dir": "D:/pythonProject/dcase2023-audio-retrieval/Clotho1",
+    "dataset_dir": "~/Clotho",
     "audio_splits": ["development", "validation", "evaluation"]
 }
 
 model_name = "sbert"
-model = SentenceTransformer('D:/pythonProject/dcase2023-audio-retrieval/all-mpnet-base-v2')  # 768-dimensional embeddings
+model = SentenceTransformer('~/all-mpnet-base-v2')  # 768-dimensional embeddings
 
 # %%
 
