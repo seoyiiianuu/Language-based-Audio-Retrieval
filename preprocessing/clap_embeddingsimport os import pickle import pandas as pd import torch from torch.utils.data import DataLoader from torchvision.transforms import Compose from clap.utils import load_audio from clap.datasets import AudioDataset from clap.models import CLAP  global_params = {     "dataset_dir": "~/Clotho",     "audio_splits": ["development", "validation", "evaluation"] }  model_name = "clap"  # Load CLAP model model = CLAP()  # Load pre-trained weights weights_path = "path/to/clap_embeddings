@@ -1,0 +1,63 @@
+import os
+import pickle
+import pandas as pd
+import torch
+from torch.utils.data import DataLoader
+from torchvision.transforms import Compose
+from clap.utils import load_audio
+from clap.datasets import AudioDataset
+from clap.models import CLAP
+
+global_params = {
+    "dataset_dir": "~/Clotho",
+    "audio_splits": ["development", "validation", "evaluation"]
+}
+
+model_name = "clap"
+
+# Load CLAP model
+model = CLAP()
+
+# Load pre-trained weights
+weights_path = "path/to/pretrained_weights.pth"
+model.load_state_dict(torch.load(weights_path))
+
+# Set device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+# Set CLAP transforms
+transforms = Compose([
+    # Add any necessary audio transforms here
+])
+
+# %% 
+
+text_embeds = {}
+
+for split in global_params["audio_splits"]:
+
+    audio_dir = os.path.join(global_params["dataset_dir"], split, "audio")
+    text_fpath = os.path.join(global_params["dataset_dir"], f"{split}_text.csv")
+    text_data = pd.read_csv(text_fpath)
+
+    dataset = AudioDataset(audio_dir, text_data, transforms=transforms)
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+
+    for audio, tid in dataloader:
+        audio = audio.to(device)
+
+        print(split, tid)
+
+        with torch.no_grad():
+            audio_embed = model(audio)
+
+        text_embeds[tid] = audio_embed.squeeze().cpu().numpy()
+
+# Save audio embeddings
+embed_fpath = os.path.join(global_params["dataset_dir"], f"{model_name}_embeds.pkl")
+
+with open(embed_fpath, "wb") as stream:
+    pickle.dump(text_embeds, stream)
+
+print("Save audio embeddings to", embed_fpath)
