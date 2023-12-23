@@ -10,4 +10,4 @@ Pre-trained Models
 3. BERT https://huggingface.co/bert-base-uncased
 4. RoBERTa https://huggingface.co/xlm-roberta-base
 5. CNN14
-6. Sentence-BERT
+6. all-mpnet-base-v2 https://huggingface.co/sentence-transformers/all-mpnet-base-v2
