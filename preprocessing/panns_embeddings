@@ -1,0 +1,41 @@
+import os
+import pickle
+import pandas as pd
+from panns_inference import AudioTagging
+
+global_params = {
+    "dataset_dir": "~/Clotho",
+    "audio_splits": ["development", "validation", "evaluation"]
+}
+
+model_name = "panns"
+
+# Load PANNs model
+model = AudioTagging()
+
+# %% 
+
+text_embeds = {}
+
+for split in global_params["audio_splits"]:
+
+    audio_dir = os.path.join(global_params["dataset_dir"], split, "audio")
+    text_fpath = os.path.join(global_params["dataset_dir"], f"{split}_text.csv")
+    text_data = pd.read_csv(text_fpath)
+
+    for i in text_data.index:
+        tid = text_data.loc[i].tid
+        audio_path = os.path.join(audio_dir, f"{tid}.wav")
+
+        print(split, tid, audio_path)
+
+        audio_embed = model.predict(audio_path)
+        text_embeds[tid] = audio_embed
+
+# Save audio embeddings
+embed_fpath = os.path.join(global_params["dataset_dir"], f"{model_name}_embeds.pkl")
+
+with open(embed_fpath, "wb") as stream:
+    pickle.dump(text_embeds, stream)
+
+print("Save audio embeddings to", embed_fpath)
