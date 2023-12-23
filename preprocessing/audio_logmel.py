@@ -39,7 +39,7 @@ def log_mel_spectrogram(y,
 # %%
 
 global_params = {
-    "dataset_dir": "D:/pythonProject/dcase2023-audio-retrieval/Clotho1",
+    "dataset_dir": "~/Clotho",
     "audio_splits": ["development", "validation", "evaluation"]
 }
 
@@ -64,7 +64,6 @@ for split in global_params["audio_splits"]:
     # else:
     #     stream = h5py.File(audio_logmel, "w")
 
-    # 如果文件已存在，先删除文件
     if os.path.exists(audio_logmel):
         os.remove(audio_logmel)
 
