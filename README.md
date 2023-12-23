@@ -5,7 +5,7 @@ Datasets Download
 2. Clotho https://zenodo.org/records/4783391
 
 Pre-trained Models
-1. PANNs https://huggingface.co/thelou1s/panns-inference
+1. PANNs https://zenodo.org/records/3987831
 2. CLAP https://huggingface.co/laion/clap-htsat-unfused/tree/main
 3. BERT https://huggingface.co/bert-base-uncased
 4. RoBERTa https://huggingface.co/xlm-roberta-base
